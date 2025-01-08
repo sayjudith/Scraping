@@ -1,0 +1,45 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Lenovo\\ForGitHub\\Scraping\\Lessons1_4\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5A625B60-1CF8-4E99-8F96-73F39FD01A82}|Lessons1_4\\Lessons1_4.csproj|c:\\users\\lenovo\\forgithub\\scraping\\lessons1_4\\lessons1_4\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5A625B60-1CF8-4E99-8F96-73F39FD01A82}|Lessons1_4\\Lessons1_4.csproj|solutionrelative:lessons1_4\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\ForGitHub\\Scraping\\Lessons1_4\\Lessons1_4\\Program.cs",
+              "RelativeDocumentMoniker": "Lessons1_4\\Program.cs",
+              "ToolTip": "C:\\Users\\Lenovo\\ForGitHub\\Scraping\\Lessons1_4\\Lessons1_4\\Program.cs*",
+              "RelativeToolTip": "Lessons1_4\\Program.cs*",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAuwC0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-08T10:08:57.068Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
