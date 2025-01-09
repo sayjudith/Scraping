@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "cUFkvIPjNGA=",
+  "dgSpecHash": "2zwjarsZl/k=",
   "success": true,
   "projectFilePath": "C:\\Users\\Lenovo\\ForGitHub\\Scraping\\Lessons1_4\\Lessons1_4\\Lessons1_4.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Lenovo\\.nuget\\packages\\htmlagilitypack\\1.11.72\\htmlagilitypack.1.11.72.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.playwright\\1.49.0\\microsoft.playwright.1.49.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512",

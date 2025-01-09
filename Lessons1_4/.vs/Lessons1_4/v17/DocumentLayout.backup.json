@@ -10,12 +10,16 @@
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
-      "VerticalTabListWidth": 256,
+      "VerticalTabListWidth": 100,
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
@@ -26,16 +30,12 @@
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Lenovo\\ForGitHub\\Scraping\\Lessons1_4\\Lessons1_4\\Program.cs",
               "RelativeDocumentMoniker": "Lessons1_4\\Program.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\ForGitHub\\Scraping\\Lessons1_4\\Lessons1_4\\Program.cs*",
-              "RelativeToolTip": "Lessons1_4\\Program.cs*",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAuwC0AAAABAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Lenovo\\ForGitHub\\Scraping\\Lessons1_4\\Lessons1_4\\Program.cs",
+              "RelativeToolTip": "Lessons1_4\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-08T10:08:57.068Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         }
