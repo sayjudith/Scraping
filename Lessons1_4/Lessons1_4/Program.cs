@@ -11,23 +11,18 @@ class Program
 
     public static void Main(string[] args)
     { 
-        // create a folder for saving files
         string folderName = "News";
         var iCheck = CreateFolder(folderName);
-
         if (iCheck == 1)
         {
            CleanFolder(folderName);
         }
-        //SaveNewsContetnt(folderName, "Test1", "testContent");
         GetNews(folderName).Wait();
     }
 
     private static int CreateFolder(string newFolderName) {
         string currentDirectory = Directory.GetCurrentDirectory();
-
         string folderPath = Path.Combine(currentDirectory, newFolderName);
-
         if (!Directory.Exists(folderPath))
         {
             Directory.CreateDirectory(folderPath);
@@ -38,8 +33,7 @@ class Program
         {
             Console.WriteLine($"Папка уже существует: {folderPath}");
             return 1;
-        }
-        
+        } 
     }
 
     private static void CleanFolder(string folderName)
@@ -54,20 +48,15 @@ class Program
         Console.WriteLine($"Файлы в папке {folderName} удалены");
     }
 
-    private static async Task GetNews(string storageFolder) {
-
+    private static async Task GetNews(string storageFolder) 
+    {
         Console.WriteLine("браузер открывается\n");
         IPlaywright playwright = await Playwright.CreateAsync();
         IBrowser browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
         IPage page = await browser.NewPageAsync();
         IPage pageHref = await browser.NewPageAsync();
-        // Переход на сайт
         await page.GotoAsync("https://ria.ru/world/");
-
-        //Create locator for elements
         var newsLocator = page.Locator(".list .list-item");
-
-        // extract text from title
         var newsCount = await newsLocator.CountAsync();
         if (newsCount == 0)
         {
@@ -84,13 +73,12 @@ class Program
                 var newsPreviewCount = await newsItemInfos.Nth(1).TextContentAsync();
                 var newsTags = await newsLocator.Nth(i).Locator(".list-tag__text").AllInnerTextsAsync();
                 var tagsString = newsTags.Any() ? string.Join(", ", newsTags) : "Нет тегов";
-
                 var linkLocation = newsLocator.Nth(i).Locator(".list-item__title");
                 var linkReference = await linkLocation.GetAttributeAsync("href");
                 if (linkReference != null)
                 {
                     await pageHref.GotoAsync(linkReference);
-                    var newsTextLocator = pageHref.Locator(".article__block");
+                    var newsTextLocator = pageHref.Locator(".article__text");
                     var blockCount = await newsTextLocator.CountAsync();
                     var fullNewsContent = "";
                     if (blockCount > 0)
@@ -100,25 +88,35 @@ class Program
                             fullNewsContent += await newsTextLocator.Nth(j).TextContentAsync();
                         }
                         var fullNewsForSafe = headerText + newsPreviewDate +  newsPreviewCount + fullNewsContent;
-                        SaveNewsContetnt(storageFolder, "News" + (i+1) , fullNewsForSafe);
+                        var nameForFile = FixedTextForFileName(headerText);
+                        SaveNewsContetnt(storageFolder, $"[{i + 1}]{nameForFile}.txt" , fullNewsForSafe);
+                        Console.WriteLine($"finished [{i + 1}] file");
                     }
                 }
-
-                Console.WriteLine($"NewsTitle_{i}: {headerText}, \npreviews: {newsPreviewCount}, date: {newsPreviewDate}, \ntag: [{tagsString}], \nlink: [{linkReference}]");
-                 
+                Console.WriteLine($"NewsTitle_{i}: {headerText}, \npreviews: {newsPreviewCount}, date: {newsPreviewDate}, \ntag: [{tagsString}], \nlink: [{linkReference}]");  
             }
         }
-
-        // Закрытие браузера
         await browser.CloseAsync();
         Console.WriteLine("браузер закрыт\n");
     }
 
-     private static void SaveNewsContetnt(string folderName, string fileName, string content) {
-        string currentDirectory = Directory.GetCurrentDirectory();
-        string filePath = Path.Combine(currentDirectory, folderName, fileName);
-        File.WriteAllText(filePath, content);
-        Console.WriteLine($"Файл {fileName} сохранен в текущей папке");
+    private static void SaveNewsContetnt(string folderName, string fileName, string content) 
+    {
+    string currentDirectory = Directory.GetCurrentDirectory();
+    string filePath = Path.Combine(currentDirectory, folderName, fileName);
+    File.WriteAllText(filePath, content);
+    Console.WriteLine($"Файл {fileName} сохранен в текущей папке");
     }
 
+    private static string FixedTextForFileName(string? fileName)
+    {
+        if (fileName == null)
+        {
+            return "";
+        }
+        else
+        {
+            return fileName.Replace("\"", "").Replace("\'", "").Replace(":", "");
+        }
+    }
 }
