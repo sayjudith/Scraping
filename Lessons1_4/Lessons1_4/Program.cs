@@ -12,27 +12,27 @@ class Program
     public static void Main(string[] args)
     { 
         string folderName = "News";
-        var iCheck = CreateFolder(folderName);
-        if (iCheck == 1)
+        bool bCheck = CreateFolder(folderName);
+        if (bCheck = true)
         {
            CleanFolder(folderName);
         }
         GetNews(folderName).Wait();
     }
 
-    private static int CreateFolder(string newFolderName) {
+    private static bool CreateFolder(string newFolderName) {
         string currentDirectory = Directory.GetCurrentDirectory();
         string folderPath = Path.Combine(currentDirectory, newFolderName);
         if (!Directory.Exists(folderPath))
         {
             Directory.CreateDirectory(folderPath);
             Console.WriteLine($"Папка создана в текущем каталоге: {folderPath}");
-            return 0;
+            return false;
         }
         else
         {
             Console.WriteLine($"Папка уже существует: {folderPath}");
-            return 1;
+            return true;
         } 
     }
 
@@ -51,10 +51,10 @@ class Program
     private static async Task GetNews(string storageFolder) 
     {
         Console.WriteLine("браузер открывается\n");
-        IPlaywright playwright = await Playwright.CreateAsync();
-        IBrowser browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
-        IPage page = await browser.NewPageAsync();
-        IPage pageHref = await browser.NewPageAsync();
+        var playwright = await Playwright.CreateAsync();
+        var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        var page = await browser.NewPageAsync();
+        var pageHref = await browser.NewPageAsync();
         await page.GotoAsync("https://ria.ru/world/");
         var newsLocator = page.Locator(".list .list-item");
         var newsCount = await newsLocator.CountAsync();
@@ -87,7 +87,7 @@ class Program
                         {
                             fullNewsContent += await newsTextLocator.Nth(j).TextContentAsync();
                         }
-                        var fullNewsForSafe = headerText + newsPreviewDate +  newsPreviewCount + fullNewsContent;
+                        var fullNewsForSafe = headerText  + "\ndate: " + newsPreviewDate + "\npreviews: " + newsPreviewCount  + "\nlink: " + linkReference + "\n\n" + fullNewsContent + "\n\ntag: " + tagsString;
                         var nameForFile = FixedTextForFileName(headerText);
                         SaveNewsContetnt(storageFolder, $"[{i + 1}]{nameForFile}.txt" , fullNewsForSafe);
                         Console.WriteLine($"finished [{i + 1}] file");
@@ -116,7 +116,7 @@ class Program
         }
         else
         {
-            return fileName.Replace("\"", "").Replace("\'", "").Replace(":", "");
+            return fileName.Replace("\"", "").Replace("\'", "").Replace(":", "").Replace("*", "");
         }
     }
 }
