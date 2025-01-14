@@ -20,7 +20,8 @@ class Program
         GetNews(folderName).Wait();
     }
 
-    private static bool CreateFolder(string newFolderName) {
+    private static bool CreateFolder(string newFolderName) 
+    {
         string currentDirectory = Directory.GetCurrentDirectory();
         string folderPath = Path.Combine(currentDirectory, newFolderName);
         if (!Directory.Exists(folderPath))
