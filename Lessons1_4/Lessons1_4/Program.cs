@@ -12,8 +12,8 @@ class Program
     public static void Main(string[] args)
     { 
         string folderName = "News";
-        bool bCheck = CreateFolder(folderName);
-        if (bCheck = true)
+        bool wasFolderCreated = CreateFolder(folderName);
+        if (wasFolderCreated == true)
         {
            CleanFolder(folderName);
         }
@@ -78,37 +78,50 @@ class Program
                 if (linkReference != null)
                 {
                     await pageHref.GotoAsync(linkReference);
-                    var newsTextLocator = pageHref.Locator(".article__text");
-                    var blockCount = await newsTextLocator.CountAsync();
-                    var fullNewsContent = "";
-                    if (blockCount > 0)
+                    await pageHref.WaitForSelectorAsync(".article__header");
+                    var newsMainTitle =  pageHref.Locator(".article__title");
+                    var newsSubTitle = pageHref.Locator(".article__second-title");
+                    var newsTextsLocator = pageHref.Locator(".article__block");
+                    int textsBlocksCount = await newsTextsLocator.CountAsync();
+
+                    if (textsBlocksCount > 0)
                     {
-                        for (int j = 0; j < blockCount; j++)
+                        string fullNewsContent = "";
+                        for (int j = 0; j < textsBlocksCount; j++)
                         {
-                            fullNewsContent += await newsTextLocator.Nth(j).TextContentAsync();
+                            var ttmp = await newsTextsLocator.Nth(j).GetAttributeAsync("data-type");
+                            if (ttmp == "text")
+                            {
+                                var tmp = await newsTextsLocator.Nth(j).TextContentAsync();
+                                fullNewsContent += "\n" + await newsTextsLocator.Nth(j).TextContentAsync();
+                            }
                         }
-                        var fullNewsForSafe = headerText  + "\ndate: " + newsPreviewDate + "\npreviews: " + newsPreviewCount  + "\nlink: " + linkReference + "\n\n" + fullNewsContent + "\n\ntag: " + tagsString;
-                        var nameForFile = FixedTextForFileName(headerText);
-                        SaveNewsContetnt(storageFolder, $"[{i + 1}]{nameForFile}.txt" , fullNewsForSafe);
+
+                        var fullNewsForSave = headerText + "\ndate: " + newsPreviewDate + "\npreviews: " + newsPreviewCount + "\n\ntag: " + tagsString + "\n\n" + fullNewsContent;
+                        var nameForFile = FormatFileName(headerText);
+                        SaveNewsContent(storageFolder, $"[{i + 1}] {nameForFile}.txt", fullNewsForSave);
                         Console.WriteLine($"finished [{i + 1}] file");
                     }
+                    else {
+                        Console.WriteLine($"file [{i + 1}] cannot be formed");
+                    }
                 }
-                Console.WriteLine($"NewsTitle_{i}: {headerText}, \npreviews: {newsPreviewCount}, date: {newsPreviewDate}, \ntag: [{tagsString}], \nlink: [{linkReference}]");  
+                Console.WriteLine($"NewsTitle_{i + 1 }: {headerText}, \npreviews: {newsPreviewCount}, date: {newsPreviewDate}, \ntag: [{tagsString}], \nlink: [{linkReference}]\n");
             }
         }
         await browser.CloseAsync();
         Console.WriteLine("браузер закрыт\n");
     }
 
-    private static void SaveNewsContetnt(string folderName, string fileName, string content) 
+    private static void SaveNewsContent(string folderName, string fileName, string content) 
     {
-    string currentDirectory = Directory.GetCurrentDirectory();
-    string filePath = Path.Combine(currentDirectory, folderName, fileName);
-    File.WriteAllText(filePath, content);
-    Console.WriteLine($"Файл {fileName} сохранен в текущей папке");
+        string currentDirectory = Directory.GetCurrentDirectory();
+        string filePath = Path.Combine(currentDirectory, folderName, fileName);
+        File.WriteAllText(filePath, content);
+        Console.WriteLine($"Файл {fileName} сохранен в текущей папке");
     }
 
-    private static string FixedTextForFileName(string? fileName)
+    private static string FormatFileName(string? fileName)
     {
         if (fileName == null)
         {
