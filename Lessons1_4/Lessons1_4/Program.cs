@@ -53,7 +53,7 @@ class Program
     {
         Console.WriteLine("браузер открывается\n");
         var playwright = await Playwright.CreateAsync();
-        var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false });
         var page = await browser.NewPageAsync();
         var pageHref = await browser.NewPageAsync();
         await page.GotoAsync("https://ria.ru/world/");
@@ -90,17 +90,17 @@ class Program
                         string fullNewsContent = "";
                         for (int j = 0; j < textsBlocksCount; j++)
                         {
-                            var ttmp = await newsTextsLocator.Nth(j).GetAttributeAsync("data-type");
-                            if (ttmp == "text")
+                            var articleRowId = await newsTextsLocator.Nth(j).GetAttributeAsync("data-type");
+                            if (articleRowId == "text")
                             {
-                                var tmp = await newsTextsLocator.Nth(j).TextContentAsync();
-                                fullNewsContent += "\n" + await newsTextsLocator.Nth(j).TextContentAsync();
+                                var articleRowByCondition = await newsTextsLocator.Nth(j).TextContentAsync();
+                                fullNewsContent += "\n" + articleRowByCondition;
                             }
                         }
 
                         var fullNewsForSave = headerText + "\ndate: " + newsPreviewDate + "\npreviews: " + newsPreviewCount + "\n\ntag: " + tagsString + "\n\n" + fullNewsContent;
-                        var nameForFile = FormatFileName(headerText);
-                        SaveNewsContent(storageFolder, $"[{i + 1}] {nameForFile}.txt", fullNewsForSave);
+                        var fileName = FormatFileName(headerText);
+                        SaveNewsContent(storageFolder, $"[{i + 1}] {fileName}.txt", fullNewsForSave);
                         Console.WriteLine($"finished [{i + 1}] file");
                     }
                     else {
