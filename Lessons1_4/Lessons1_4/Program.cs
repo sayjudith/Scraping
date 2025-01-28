@@ -1,4 +1,4 @@
-﻿using Lessons1_4.Solutions;
+﻿using Lessons1_4.Services;
 
 class Program
 {
@@ -6,10 +6,10 @@ class Program
     public static void Main(string[] args)
     {
         SiteParser spLocal = new SiteParser("https://ria.ru/world/");
-        spLocal.GetNews().Wait();
+        spLocal.GetNewsAsync().Wait();
         spLocal.PrintListNewsStruct();
         FileSaver fsLocal = new FileSaver();
         fsLocal.FolderName = "News";
-        fsLocal.mainJob(spLocal.ReadStructNewsFromSite());
+        fsLocal.MainJob(spLocal.ReadStructNewsFromSite());
     }
 }

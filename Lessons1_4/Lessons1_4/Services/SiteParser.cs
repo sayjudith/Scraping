@@ -1,36 +1,35 @@
-﻿using Microsoft.Playwright;
+﻿using Lessons1_4.Models;
+using Microsoft.Playwright;
 
 
-namespace Lessons1_4.Solutions
+namespace Lessons1_4.Services
 
 {
     internal class SiteParser
 	{
-		private string sURL; 
-		public string SURL {
-			get { return sURL; } 
-			set { sURL = value; } 
-		}
-		private List<NewsStruct> nsNews;
+		public string url; 
+		public string URL { get; set; } 
+			
+		public List<NewsStruct> News;
 
-		public SiteParser(string sExternalURL) 
+		public SiteParser(string ExternalURL) 
 		{
-			this.sURL = sExternalURL;
-            this.nsNews = new List<NewsStruct>();
+			url = ExternalURL;
+            News = new List<NewsStruct>();
 		}
 
 		public List<NewsStruct> ReadStructNewsFromSite() {
-			return nsNews;
+			return News;
 		}
 
-        public async Task GetNews()
+        public async Task GetNewsAsync()
         {
             Console.WriteLine("браузер открывается\n");
             var playwright = await Playwright.CreateAsync();
             var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
             var page = await browser.NewPageAsync();
             var pageHref = await browser.NewPageAsync();
-            await page.GotoAsync(this.sURL);
+            await page.GotoAsync(this.url);
             var newsLocator = page.Locator(".list .list-item");
             var newsCount = await newsLocator.CountAsync();
             if (newsCount == 0)
@@ -73,7 +72,7 @@ namespace Lessons1_4.Solutions
 
                             var fullNewsForSave = headerText + "\ndate: " + newsPreviewDate + "\npreviews: " + newsPreviewCount + "\n\ntag: " + tagsString + "\n\n" + fullNewsContent;
                             var fileName = FormatFileName(headerText);
-                            this.nsNews.Add(new NewsStruct() 
+                            News.Add(new NewsStruct() 
                             {
                                 FileName = $"[{i + 1}] {fileName}.txt",
                                 Title = headerText,
@@ -94,7 +93,7 @@ namespace Lessons1_4.Solutions
             Console.WriteLine("браузер закрыт\n");
         }
 
-        private string FormatFileName(string? fileName)
+        public string FormatFileName(string? fileName)
         {
             if (fileName == null)
             {
@@ -108,9 +107,9 @@ namespace Lessons1_4.Solutions
 
         public void PrintListNewsStruct()
         {
-            foreach (NewsStruct aNewsStruct in this.nsNews)
+            foreach (NewsStruct anotherNewsStruct in News)
             {
-                Console.WriteLine(aNewsStruct);
+                Console.WriteLine(anotherNewsStruct);
             }
         }
     }

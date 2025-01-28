@@ -1,16 +1,17 @@
-﻿
-namespace Lessons1_4.Solutions
+﻿using Lessons1_4.Models;
+namespace Lessons1_4.Services
+
 {
     internal class FileSaver
     {
-        private string? _folderName;
+        public string? _folderName;
 
-        public string? FolderName { get { return _folderName; } set { _folderName = value; } }
+        public string? FolderName { get; set; }
 
-        public void mainJob(List<NewsStruct> aNewsStruct)
+        public void MainJob(List<NewsStruct> anotherNewsStruct)
         {
             FolderJob();
-            SaveNewsContent(aNewsStruct);
+            SaveNewsContent(anotherNewsStruct);
         }
 
         public void FolderJob()
@@ -26,7 +27,7 @@ namespace Lessons1_4.Solutions
         private bool CreateFolder()
         {
             string currentDirectory = Directory.GetCurrentDirectory();
-            string folderPath = Path.Combine(currentDirectory, this.FolderName);
+            string folderPath = Path.Combine(currentDirectory, FolderName);
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
@@ -43,7 +44,7 @@ namespace Lessons1_4.Solutions
         private void CleanFolder()
         {
             string currentDirectory = Directory.GetCurrentDirectory();
-            string folderPath = Path.Combine(currentDirectory, this.FolderName);
+            string folderPath = Path.Combine(currentDirectory, FolderName);
             var i = 0;
             DirectoryInfo di = new DirectoryInfo(folderPath);
             foreach (FileInfo file in di.GetFiles())
