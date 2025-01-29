@@ -8,10 +8,10 @@ namespace Lessons1_4.Services
 
         public string? FolderName { get; set; }
 
-        public void MainJob(List<NewsStruct> anotherNewsStruct)
+        public void Job(List<NewsModel> anotherNews)
         {
             FolderJob();
-            SaveNewsContent(anotherNewsStruct);
+            SaveNewsContent(anotherNews);
         }
 
         public void FolderJob()
@@ -58,7 +58,7 @@ namespace Lessons1_4.Services
             }
         }
 
-        private void SaveNewsContent(List<NewsStruct> AllNews)
+        private void SaveNewsContent(List<NewsModel> AllNews)
         {
             string currentDirectory = Directory.GetCurrentDirectory();
             var filesCount = AllNews?.Count;

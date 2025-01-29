@@ -10,15 +10,15 @@ namespace Lessons1_4.Services
 		public string url; 
 		public string URL { get; set; } 
 			
-		public List<NewsStruct> News;
+		public List<NewsModel> News;
 
 		public SiteParser(string ExternalURL) 
 		{
 			url = ExternalURL;
-            News = new List<NewsStruct>();
+            News = new List<NewsModel>();
 		}
 
-		public List<NewsStruct> ReadStructNewsFromSite() {
+		public List<NewsModel> ReadNewsFromSite() {
 			return News;
 		}
 
@@ -29,7 +29,7 @@ namespace Lessons1_4.Services
             var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
             var page = await browser.NewPageAsync();
             var pageHref = await browser.NewPageAsync();
-            await page.GotoAsync(this.url);
+            await page.GotoAsync(url);
             var newsLocator = page.Locator(".list .list-item");
             var newsCount = await newsLocator.CountAsync();
             if (newsCount == 0)
@@ -72,7 +72,7 @@ namespace Lessons1_4.Services
 
                             var fullNewsForSave = headerText + "\ndate: " + newsPreviewDate + "\npreviews: " + newsPreviewCount + "\n\ntag: " + tagsString + "\n\n" + fullNewsContent;
                             var fileName = FormatFileName(headerText);
-                            News.Add(new NewsStruct() 
+                            News.Add(new NewsModel() 
                             {
                                 FileName = $"[{i + 1}] {fileName}.txt",
                                 Title = headerText,
@@ -107,9 +107,9 @@ namespace Lessons1_4.Services
 
         public void PrintListNewsStruct()
         {
-            foreach (NewsStruct anotherNewsStruct in News)
+            foreach (NewsModel anotherNews in News)
             {
-                Console.WriteLine(anotherNewsStruct);
+                Console.WriteLine(anotherNews);
             }
         }
     }

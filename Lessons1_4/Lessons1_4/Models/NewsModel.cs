@@ -1,8 +1,12 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Lessons1_4.Models
 {
-    internal struct NewsStruct
+    internal class NewsModel
     {
         public string title;
         public string publishDate;
