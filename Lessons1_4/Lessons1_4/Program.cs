@@ -10,6 +10,6 @@ class Program
         spLocal.PrintListNewsStruct();
         FileSaver fsLocal = new FileSaver();
         fsLocal.FolderName = "News";
-        fsLocal.Job(spLocal.ReadNewsFromSite());
+        fsLocal.InitFolder(spLocal.ReadNewsFromSite());
     }
 }

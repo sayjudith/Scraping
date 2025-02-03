@@ -8,7 +8,7 @@ namespace Lessons1_4.Services
 
         public string? FolderName { get; set; }
 
-        public void Job(List<NewsModel> anotherNews)
+        public void InitFolder(List<NewsModel> anotherNews)
         {
             FolderJob();
             SaveNewsContent(anotherNews);

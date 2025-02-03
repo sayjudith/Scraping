@@ -24,7 +24,7 @@ namespace Lessons1_4.Models
 
         public override string ToString()
         {
-            return "result: \n\n" + this.Title + "\n\tPublishDate: " + PublishDate + ";\n\tPreviews: " + ViewsCount + "\n\ttags: " + TagList + "\n\tFileName: " + FileName;
+            return "result: \n\n" + Title + "\n\tPublishDate: " + PublishDate + ";\n\tPreviews: " + ViewsCount + "\n\ttags: " + TagList + "\n\tFileName: " + FileName;
         }
 
     }
