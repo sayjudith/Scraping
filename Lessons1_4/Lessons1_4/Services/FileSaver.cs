@@ -1,6 +1,5 @@
 ﻿using Lessons1_4.Models;
 namespace Lessons1_4.Services
-
 {
     internal class FileSaver
     {
@@ -8,13 +7,13 @@ namespace Lessons1_4.Services
 
         public string? FolderName { get; set; }
 
-        public void InitFolder(List<NewsModel> anotherNews)
+        public void SaveFiles(List<NewsModel> anotherNews)
         {
-            FolderJob();
+            InitFolder();
             SaveNewsContent(anotherNews);
         }
 
-        public void FolderJob()
+        public void InitFolder()
         {
             bool wasFolderCreated = CreateFolder();
             if (wasFolderCreated == false)

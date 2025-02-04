@@ -2,7 +2,6 @@
 
 class Program
 {
-
     public static void Main(string[] args)
     {
         SiteParser spLocal = new SiteParser("https://ria.ru/world/");
@@ -10,6 +9,6 @@ class Program
         spLocal.PrintListNewsStruct();
         FileSaver fsLocal = new FileSaver();
         fsLocal.FolderName = "News";
-        fsLocal.InitFolder(spLocal.ReadNewsFromSite());
+        fsLocal.SaveFiles(spLocal.ReadNewsFromSite());
     }
 }
