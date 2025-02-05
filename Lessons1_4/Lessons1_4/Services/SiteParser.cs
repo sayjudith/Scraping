@@ -5,7 +5,7 @@ using Microsoft.Playwright;
 namespace Lessons1_4.Services
 {
     internal class SiteParser
-	{
+    {
 		public string url; 
 		public string URL { get; set; } 
 			

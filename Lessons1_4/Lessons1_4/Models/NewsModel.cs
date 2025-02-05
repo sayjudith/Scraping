@@ -26,6 +26,5 @@ namespace Lessons1_4.Models
         {
             return "result: \n\n" + Title + "\n\tPublishDate: " + PublishDate + ";\n\tPreviews: " + ViewsCount + "\n\ttags: " + TagList + "\n\tFileName: " + FileName;
         }
-
     }
 }

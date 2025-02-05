@@ -20,7 +20,6 @@ namespace Lessons1_4.Services
             {
                 CleanFolder();
             }
-
         }
 
         private bool CreateFolder()
