@@ -3,8 +3,6 @@ namespace Lessons1_4.Services
 {
     internal class FileSaver
     {
-        public string? _folderName;
-
         public string? FolderName { get; set; }
 
         public void SaveFiles(List<NewsModel> anotherNews)

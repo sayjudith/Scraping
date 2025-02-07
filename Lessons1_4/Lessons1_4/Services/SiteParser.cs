@@ -6,20 +6,21 @@ namespace Lessons1_4.Services
 {
     internal class SiteParser
     {
-		public string url; 
-		public string URL { get; set; } 
-			
-		public List<NewsModel> News;
+        public string url;
+        public string URL { get; set; }
 
-		public SiteParser(string ExternalURL) 
-		{
-			url = ExternalURL;
+        public List<NewsModel> News;
+
+        public SiteParser(string ExternalURL)
+        {
+            url = ExternalURL;
             News = new List<NewsModel>();
-		}
+        }
 
-		public List<NewsModel> ReadNewsFromSite() {
-			return News;
-		}
+        public List<NewsModel> ReadNewsFromSite()
+        {
+            return News;
+        }
 
         public async Task GetNewsAsync()
         {
