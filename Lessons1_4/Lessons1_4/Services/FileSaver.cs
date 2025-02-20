@@ -22,8 +22,8 @@ namespace Lessons1_4.Services
 
         private bool CreateFolder()
         {
-            string currentDirectory = Directory.GetCurrentDirectory();
-            string folderPath = Path.Combine(currentDirectory, FolderName);
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var folderPath = Path.Combine(currentDirectory, FolderName);
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
@@ -39,8 +39,8 @@ namespace Lessons1_4.Services
 
         private void CleanFolder()
         {
-            string currentDirectory = Directory.GetCurrentDirectory();
-            string folderPath = Path.Combine(currentDirectory, FolderName);
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var folderPath = Path.Combine(currentDirectory, FolderName);
             var i = 0;
             DirectoryInfo di = new DirectoryInfo(folderPath);
             foreach (FileInfo file in di.GetFiles())
@@ -56,7 +56,7 @@ namespace Lessons1_4.Services
 
         private void SaveNewsContent(List<NewsModel> AllNews)
         {
-            string currentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectory = Directory.GetCurrentDirectory();
             var filesCount = AllNews?.Count;
             Console.WriteLine(filesCount);
             for (int i = 0; i < filesCount; i++)
@@ -67,7 +67,7 @@ namespace Lessons1_4.Services
                     "\npreviews: " + AllNews[i].ViewsCount + 
                     "\n\ntags: " + AllNews[i].TagList + "\n\n" +
                     AllNews[i].FullContent;
-                string filePath = Path.Combine(currentDirectory, FolderName, fileName);
+                var filePath = Path.Combine(currentDirectory, FolderName, fileName);
                 File.WriteAllText(filePath, fullContentToSave);
                 Console.WriteLine($"Файл {fileName} сохранен в текущей папке");
             }

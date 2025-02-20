@@ -6,14 +6,14 @@ namespace Lessons1_4.Services
 {
     internal class SiteParser
     {
-        public string url;
-        public string URL { get; set; }
+        private string _url;
+        public string Url { get; set; }
 
         public List<NewsModel> News;
 
-        public SiteParser(string ExternalURL)
+        public SiteParser(string externalUrl)
         {
-            url = ExternalURL;
+            _url = externalUrl;
             News = new List<NewsModel>();
         }
 
@@ -29,7 +29,7 @@ namespace Lessons1_4.Services
             var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
             var page = await browser.NewPageAsync();
             var pageHref = await browser.NewPageAsync();
-            await page.GotoAsync(url);
+            await page.GotoAsync(_url);
             var newsLocator = page.Locator(".list .list-item");
             var newsCount = await newsLocator.CountAsync();
             if (newsCount == 0)
