@@ -7,7 +7,6 @@ namespace Lessons1_4.Services
     internal class SiteParser
     {
         private string _url;
-        public string Url { get; set; }
 
         public List<NewsModel> News;
 
@@ -115,7 +114,7 @@ namespace Lessons1_4.Services
             }
         }
 
-        public void PrintListNewsStruct()
+        public void PrintListNewsModel()
         {
             foreach (NewsModel anotherNews in News)
             {
