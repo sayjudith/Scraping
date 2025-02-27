@@ -25,7 +25,10 @@ namespace Lessons1_4.Services
         {
             Console.WriteLine("браузер открывается\n");
             var playwright = await Playwright.CreateAsync();
-            var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+            var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions 
+            { 
+                Headless = true
+            });
             var page = await browser.NewPageAsync();
             var pageHref = await browser.NewPageAsync();
             await page.GotoAsync(_url);
@@ -48,57 +51,85 @@ namespace Lessons1_4.Services
         {
             for (int i = 0; i < newsCount; i++)
             {
-                var headerText = await newsLocator.Nth(i).Locator(".list-item__content").TextContentAsync();
-                var newsItemInfos = newsLocator.Nth(i).Locator(".list-item__info-item");
-                var newsPreviewDate = await newsItemInfos.Nth(0).TextContentAsync();
-                var newsPreviewCount = await newsItemInfos.Nth(1).TextContentAsync();
-                var newsTags = await newsLocator.Nth(i).Locator(".list-tag__text").AllInnerTextsAsync();
-                var tagsString = newsTags.Any() ? string.Join(", ", newsTags) : "Нет тегов";
-                var linkLocation = newsLocator.Nth(i).Locator(".list-item__title");
-                var linkReference = await linkLocation.GetAttributeAsync("href");
-                if (linkReference != null)
+                try
                 {
-                    await GetCurrentNewsValuesAsync(i, linkReference, headerText, newsPreviewDate, newsPreviewCount, tagsString, pageHref);
+                    var headerText = await newsLocator.Nth(i).Locator(".list-item__content").TextContentAsync();
+                    var newsItemInfos = newsLocator.Nth(i).Locator(".list-item__info-item");
+                    var newsPreviewDate = await newsItemInfos.Nth(0).TextContentAsync();
+                    var newsPreviewCount = await newsItemInfos.Nth(1).TextContentAsync();
+                    var newsTags = await newsLocator.Nth(i).Locator(".list-tag__text").AllInnerTextsAsync();
+                    var tagsString = newsTags.Any() ? string.Join(", ", newsTags) : "Нет тегов";
+                    var linkLocation = newsLocator.Nth(i).Locator(".list-item__title");
+                    var linkReference = await linkLocation.GetAttributeAsync("href");
+                    if (linkReference != null)
+                    {
+                        await GetCurrentNewsValuesAsync
+                            (
+                            i, linkReference, headerText, newsPreviewDate, newsPreviewCount, tagsString, pageHref
+                            );
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("error" + ex.Message + i.ToString());
+                    await GetCurrentNewsValuesAsync(i, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, pageHref);
                 }
             }
         }
 
-        private async Task GetCurrentNewsValuesAsync(int currId, string linkReference, string headerText, string newsPreviewDate, string newsPreviewCount, string tagsString, IPage pageInnerHref)
+        private async Task GetCurrentNewsValuesAsync
+            (
+            int currId, string linkReference, string headerText, string newsPreviewDate, 
+            string newsPreviewCount, string tagsString, IPage pageInnerHref
+            )
         {
-            await pageInnerHref.GotoAsync(linkReference);
-            await pageInnerHref.WaitForSelectorAsync(".article__header");
-            var newsMainTitle = pageInnerHref.Locator(".article__title");
-            var newsSubTitle = pageInnerHref.Locator(".article__second-title");
-            var newsTextsLocator = pageInnerHref.Locator(".article__block");
-            int textsBlocksCount = await newsTextsLocator.CountAsync();
-
-            if (textsBlocksCount > 0)
+            if (!string.IsNullOrEmpty(linkReference))
             {
-                string fullNewsContent = "";
-                for (int j = 0; j < textsBlocksCount; j++)
-                {
-                    var articleRowId = await newsTextsLocator.Nth(j).GetAttributeAsync("data-type");
-                    if (articleRowId == "text")
-                    {
-                        fullNewsContent += "\n" + await newsTextsLocator.Nth(j).TextContentAsync();
-                    }
-                }
+                await pageInnerHref.GotoAsync(linkReference);
+                await pageInnerHref.WaitForSelectorAsync(".article__header");
+                var newsMainTitle = pageInnerHref.Locator(".article__title");
+                var newsSubTitle = pageInnerHref.Locator(".article__second-title");
+                var newsTextsLocator = pageInnerHref.Locator(".article__block");
+                int textsBlocksCount = await newsTextsLocator.CountAsync();
 
-                var fullNewsForSave = headerText + "\ndate: " + newsPreviewDate + "\npreviews: " + newsPreviewCount + "\n\ntag: " + tagsString + "\n\n" + fullNewsContent;
-                var fileName = FormatFileName(headerText);
-                News.Add(new NewsModel()
+                if (textsBlocksCount > 0)
                 {
-                    FileName = $"[{currId + 1}] {fileName}.txt",
-                    Title = headerText,
-                    PublishDate = newsPreviewDate,
-                    ViewsCount = newsPreviewCount,
-                    TagList = tagsString,
-                    FullContent = fullNewsContent
-                });
+                    string fullNewsContent = "";
+                    for (int j = 0; j < textsBlocksCount; j++)
+                    {
+                        var articleRowId = await newsTextsLocator.Nth(j).GetAttributeAsync("data-type");
+                        if (articleRowId == "text")
+                        {
+                            fullNewsContent += "\n" + await newsTextsLocator.Nth(j).TextContentAsync();
+                        }
+                    }
+                    var fileName = FormatFileName(headerText);
+                    News.Add(new NewsModel()
+                    {
+                        FileName = $"[{currId + 1}] {fileName}.txt",
+                        Title = headerText,
+                        PublishDate = newsPreviewDate,
+                        ViewsCount = newsPreviewCount,
+                        TagList = tagsString,
+                        FullContent = fullNewsContent
+                    });
+                }
+                else
+                {
+                    Console.WriteLine($"file [{currId + 1}] cannot be formed");
+                }
             }
             else
             {
-                Console.WriteLine($"file [{currId + 1}] cannot be formed");
+                News.Add(new NewsModel()
+                {
+                    FileName = $"[{currId + 1}] Havent found news title.txt",
+                    Title = string.Empty,
+                    PublishDate = string.Empty,
+                    ViewsCount = string.Empty,
+                    TagList = string.Empty,
+                    FullContent = string.Empty
+                });
             }
         }
 
@@ -116,7 +147,7 @@ namespace Lessons1_4.Services
 
         public void PrintListNewsModel()
         {
-            foreach (NewsModel anotherNews in News)
+            foreach (var anotherNews in News)
             {
                 Console.WriteLine(anotherNews);
             }
