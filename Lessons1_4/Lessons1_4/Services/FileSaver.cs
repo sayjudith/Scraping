@@ -42,7 +42,7 @@ namespace Lessons1_4.Services
             var currentDirectory = Directory.GetCurrentDirectory();
             var folderPath = Path.Combine(currentDirectory, FolderName);
             var i = 0;
-            DirectoryInfo di = new DirectoryInfo(folderPath);
+            var di = new DirectoryInfo(folderPath);
             foreach (FileInfo file in di.GetFiles())
             {
                 file.Delete();
@@ -61,11 +61,11 @@ namespace Lessons1_4.Services
             Console.WriteLine(filesCount);
             for (int i = 0; i < filesCount; i++)
             {
-                var fileName = AllNews[i].FileName;
-                var fullContentToSave = AllNews[i].Title + 
-                    "\ndate: " + AllNews[i].PublishDate + 
-                    "\npreviews: " + AllNews[i].ViewsCount + 
-                    "\n\ntags: " + AllNews[i].TagList + "\n\n" +
+                var fileName = AllNews[i].titleModel.FileName;
+                var fullContentToSave = AllNews[i].titleModel.Title + 
+                    "\ndate: " + AllNews[i].titleModel.PublishDate + 
+                    "\npreviews: " + AllNews[i].titleModel.ViewsCount + 
+                    "\n\ntags: " + AllNews[i].titleModel.TagList + "\n\n" +
                     AllNews[i].FullContent;
                 var filePath = Path.Combine(currentDirectory, FolderName, fileName);
                 File.WriteAllText(filePath, fullContentToSave);

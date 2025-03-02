@@ -8,17 +8,19 @@ namespace Lessons1_4.Services
     {
         private string _url;
 
-        public List<NewsModel> News;
+        private List<NewsModel> _news;
+        private List<NewsTitleModel> _newsTitles;
 
         public SiteParser(string externalUrl)
         {
             _url = externalUrl;
-            News = new List<NewsModel>();
+            _news = new List<NewsModel>();
+            _newsTitles = new List<NewsTitleModel>();
         }
 
         public List<NewsModel> ReadNewsFromSite()
         {
-            return News;
+            return _news;
         }
 
         public async Task GetNewsAsync()
@@ -30,7 +32,6 @@ namespace Lessons1_4.Services
                 Headless = true
             });
             var page = await browser.NewPageAsync();
-            var pageHref = await browser.NewPageAsync();
             await page.GotoAsync(_url);
             var newsLocator = page.Locator(".list .list-item");
             var newsCount = await newsLocator.CountAsync();
@@ -41,7 +42,7 @@ namespace Lessons1_4.Services
             }
             else
             {
-                await GetListOfNewsAsync(pageHref, newsLocator, newsCount);
+                await GetListOfNewsAsync(page, newsLocator, newsCount);
             }
             await browser.CloseAsync();
             Console.WriteLine("браузер закрыт\n");
@@ -49,11 +50,13 @@ namespace Lessons1_4.Services
 
         private async Task GetListOfNewsAsync(IPage pageHref, ILocator newsLocator, int newsCount) 
         {
+            var headerText = "";
             for (int i = 0; i < newsCount; i++)
             {
+                headerText = "";
                 try
                 {
-                    var headerText = await newsLocator.Nth(i).Locator(".list-item__content").TextContentAsync();
+                    headerText = await newsLocator.Nth(i).Locator(".list-item__content").TextContentAsync();
                     var newsItemInfos = newsLocator.Nth(i).Locator(".list-item__info-item");
                     var newsPreviewDate = await newsItemInfos.Nth(0).TextContentAsync();
                     var newsPreviewCount = await newsItemInfos.Nth(1).TextContentAsync();
@@ -63,73 +66,88 @@ namespace Lessons1_4.Services
                     var linkReference = await linkLocation.GetAttributeAsync("href");
                     if (linkReference != null)
                     {
-                        await GetCurrentNewsValuesAsync
-                            (
-                            i, linkReference, headerText, newsPreviewDate, newsPreviewCount, tagsString, pageHref
-                            );
+                        var fileName = FormatFileName(headerText);
+                        _newsTitles.Add(
+                            new NewsTitleModel() {
+                                FileName = $"[{i + 1}] {fileName}.txt",
+                                Title = headerText,
+                                PublishDate = newsPreviewDate,
+                                ViewsCount = newsPreviewCount,
+                                TagList = tagsString,
+                                LinkReference = linkReference
+                            }
+                        );
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("error" + ex.Message + i.ToString());
-                    await GetCurrentNewsValuesAsync(i, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, pageHref);
+                    _newsTitles.Add(
+                        new NewsTitleModel() {
+                            FileName = $"[{i + 1}] {headerText}.txt",
+                            Title = headerText,
+                            PublishDate = string.Empty,
+                            ViewsCount = string.Empty,
+                            TagList = string.Empty,
+                            LinkReference = string.Empty
+                        }
+                    );
                 }
             }
+            await GetCurrentNewsValuesAsync(newsCount, _newsTitles, pageHref);
         }
 
-        private async Task GetCurrentNewsValuesAsync
-            (
-            int currId, string linkReference, string headerText, string newsPreviewDate, 
-            string newsPreviewCount, string tagsString, IPage pageInnerHref
-            )
+        private async Task GetCurrentNewsValuesAsync(int countOfNews, List<NewsTitleModel> newsTitleList, IPage pageInnerHref)
         {
-            if (!string.IsNullOrEmpty(linkReference))
-            {
-                await pageInnerHref.GotoAsync(linkReference);
-                await pageInnerHref.WaitForSelectorAsync(".article__header");
-                var newsMainTitle = pageInnerHref.Locator(".article__title");
-                var newsSubTitle = pageInnerHref.Locator(".article__second-title");
-                var newsTextsLocator = pageInnerHref.Locator(".article__block");
-                int textsBlocksCount = await newsTextsLocator.CountAsync();
-
-                if (textsBlocksCount > 0)
+            if (countOfNews > 0) {
+                for (int i = 0; i < countOfNews; i++)
                 {
-                    string fullNewsContent = "";
-                    for (int j = 0; j < textsBlocksCount; j++)
+                    var currLinkReference = newsTitleList[i].LinkReference;
+                    if (!string.IsNullOrEmpty(currLinkReference))
                     {
-                        var articleRowId = await newsTextsLocator.Nth(j).GetAttributeAsync("data-type");
-                        if (articleRowId == "text")
+                        await pageInnerHref.GotoAsync(currLinkReference);
+                        await pageInnerHref.WaitForSelectorAsync(".article__header");
+                        var newsMainTitle = pageInnerHref.Locator(".article__title");
+                        var newsSubTitle = pageInnerHref.Locator(".article__second-title");
+                        var newsTextsLocator = pageInnerHref.Locator(".article__block");
+                        int textsBlocksCount = await newsTextsLocator.CountAsync();
+
+                        string fullNewsContent = "";
+                        if (textsBlocksCount > 0)
                         {
-                            fullNewsContent += "\n" + await newsTextsLocator.Nth(j).TextContentAsync();
+                            fullNewsContent = "";
+                            for (int j = 0; j < textsBlocksCount; j++)
+                            {
+                                var articleRowId = await newsTextsLocator.Nth(j).GetAttributeAsync("data-type");
+                                if (articleRowId == "text")
+                                {
+                                    fullNewsContent += "\n" + await newsTextsLocator.Nth(j).TextContentAsync();
+                                }
+                            }
+                            _news.Add(new NewsModel()
+                            {
+                                titleModel = _newsTitles[i],
+                                FullContent = fullNewsContent
+                            });
+                        }
+                        else
+                        {
+                            Console.WriteLine($"file [{i + 1}] cannot be formed");
                         }
                     }
-                    var fileName = FormatFileName(headerText);
-                    News.Add(new NewsModel()
+                    else
                     {
-                        FileName = $"[{currId + 1}] {fileName}.txt",
-                        Title = headerText,
-                        PublishDate = newsPreviewDate,
-                        ViewsCount = newsPreviewCount,
-                        TagList = tagsString,
-                        FullContent = fullNewsContent
-                    });
-                }
-                else
-                {
-                    Console.WriteLine($"file [{currId + 1}] cannot be formed");
+                        _news.Add(new NewsModel()
+                        {
+                            titleModel = _newsTitles[i],
+                            FullContent = string.Empty
+                        });
+                    }
                 }
             }
             else
             {
-                News.Add(new NewsModel()
-                {
-                    FileName = $"[{currId + 1}] Havent found news title.txt",
-                    Title = string.Empty,
-                    PublishDate = string.Empty,
-                    ViewsCount = string.Empty,
-                    TagList = string.Empty,
-                    FullContent = string.Empty
-                });
+                Console.WriteLine("Wrong list of news");
             }
         }
 
@@ -147,7 +165,7 @@ namespace Lessons1_4.Services
 
         public void PrintListNewsModel()
         {
-            foreach (var anotherNews in News)
+            foreach (var anotherNews in _news)
             {
                 Console.WriteLine(anotherNews);
             }
