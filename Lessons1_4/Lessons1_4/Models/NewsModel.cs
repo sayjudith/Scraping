@@ -22,17 +22,17 @@ namespace Lessons1_4.Models
 
     internal class NewsModel
     {
-        public NewsTitleModel titleModel { get; set; }
+        public NewsTitleModel TitleModel { get; set; }
         public string FullContent { get; set;}
 
         public override string ToString()
         {
             return "result: \n\n" + 
-                titleModel.Title + "\n\tPublishDate: " +
-                titleModel.PublishDate + ";\n\tPreviews: " +
-                titleModel.ViewsCount + "\n\ttags: " +
-                titleModel.TagList + "\n\tFileName: " +
-                titleModel.FileName;
+                TitleModel.Title + "\n\tPublishDate: " +
+                TitleModel.PublishDate + ";\n\tPreviews: " +
+                TitleModel.ViewsCount + "\n\ttags: " +
+                TitleModel.TagList + "\n\tFileName: " +
+                TitleModel.FileName;
         }
     }
 }

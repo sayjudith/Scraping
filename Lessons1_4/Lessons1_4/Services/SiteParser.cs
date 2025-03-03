@@ -18,12 +18,7 @@ namespace Lessons1_4.Services
             _newsTitles = new List<NewsTitleModel>();
         }
 
-        public List<NewsModel> ReadNewsFromSite()
-        {
-            return _news;
-        }
-
-        public async Task GetNewsAsync()
+        public async Task<List<NewsModel>> GetNewsAsync()
         {
             Console.WriteLine("браузер открывается\n");
             var playwright = await Playwright.CreateAsync();
@@ -38,7 +33,7 @@ namespace Lessons1_4.Services
             if (newsCount == 0)
             {
                 Console.WriteLine("No news found");
-                return;
+                return new List<NewsModel>();
             }
             else
             {
@@ -46,9 +41,10 @@ namespace Lessons1_4.Services
             }
             await browser.CloseAsync();
             Console.WriteLine("браузер закрыт\n");
+            return _news;
         }
 
-        private async Task GetListOfNewsAsync(IPage pageHref, ILocator newsLocator, int newsCount) 
+        private async Task GetListOfNewsAsync(IPage page, ILocator newsLocator, int newsCount) 
         {
             var headerText = "";
             for (int i = 0; i < newsCount; i++)
@@ -94,26 +90,35 @@ namespace Lessons1_4.Services
                     );
                 }
             }
-            await GetCurrentNewsValuesAsync(newsCount, _newsTitles, pageHref);
+            await GetCurrentNewsValuesAsync(newsCount, _newsTitles, page);
         }
 
-        private async Task GetCurrentNewsValuesAsync(int countOfNews, List<NewsTitleModel> newsTitleList, IPage pageInnerHref)
+        private async Task GetCurrentNewsValuesAsync(int newsCount, List<NewsTitleModel> newsTitleList, IPage page)
         {
-            if (countOfNews > 0) {
-                for (int i = 0; i < countOfNews; i++)
+            if (newsCount == 0) 
+            {
+                Console.WriteLine("Wrong list of news");
+            }
+            else
+            {
+                for (int i = 0; i < newsCount; i++)
                 {
                     var currLinkReference = newsTitleList[i].LinkReference;
                     if (!string.IsNullOrEmpty(currLinkReference))
                     {
-                        await pageInnerHref.GotoAsync(currLinkReference);
-                        await pageInnerHref.WaitForSelectorAsync(".article__header");
-                        var newsMainTitle = pageInnerHref.Locator(".article__title");
-                        var newsSubTitle = pageInnerHref.Locator(".article__second-title");
-                        var newsTextsLocator = pageInnerHref.Locator(".article__block");
+                        await page.GotoAsync(currLinkReference);
+                        await page.WaitForSelectorAsync(".article__header");
+                        var newsMainTitle = page.Locator(".article__title");
+                        var newsSubTitle = page.Locator(".article__second-title");
+                        var newsTextsLocator = page.Locator(".article__block");
                         int textsBlocksCount = await newsTextsLocator.CountAsync();
 
                         string fullNewsContent = "";
-                        if (textsBlocksCount > 0)
+                        if (textsBlocksCount == 0)
+                        {
+                            Console.WriteLine($"file [{i + 1}] cannot be formed");
+                        }
+                        else
                         {
                             fullNewsContent = "";
                             for (int j = 0; j < textsBlocksCount; j++)
@@ -126,28 +131,20 @@ namespace Lessons1_4.Services
                             }
                             _news.Add(new NewsModel()
                             {
-                                titleModel = _newsTitles[i],
+                                TitleModel = _newsTitles[i],
                                 FullContent = fullNewsContent
                             });
-                        }
-                        else
-                        {
-                            Console.WriteLine($"file [{i + 1}] cannot be formed");
                         }
                     }
                     else
                     {
                         _news.Add(new NewsModel()
                         {
-                            titleModel = _newsTitles[i],
+                            TitleModel = _newsTitles[i],
                             FullContent = string.Empty
                         });
                     }
                 }
-            }
-            else
-            {
-                Console.WriteLine("Wrong list of news");
             }
         }
 

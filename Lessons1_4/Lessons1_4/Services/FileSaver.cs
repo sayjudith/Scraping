@@ -61,11 +61,11 @@ namespace Lessons1_4.Services
             Console.WriteLine(filesCount);
             for (int i = 0; i < filesCount; i++)
             {
-                var fileName = AllNews[i].titleModel.FileName;
-                var fullContentToSave = AllNews[i].titleModel.Title + 
-                    "\ndate: " + AllNews[i].titleModel.PublishDate + 
-                    "\npreviews: " + AllNews[i].titleModel.ViewsCount + 
-                    "\n\ntags: " + AllNews[i].titleModel.TagList + "\n\n" +
+                var fileName = AllNews[i].TitleModel.FileName;
+                var fullContentToSave = AllNews[i].TitleModel.Title + 
+                    "\ndate: " + AllNews[i].TitleModel.PublishDate + 
+                    "\npreviews: " + AllNews[i].TitleModel.ViewsCount + 
+                    "\n\ntags: " + AllNews[i].TitleModel.TagList + "\n\n" +
                     AllNews[i].FullContent;
                 var filePath = Path.Combine(currentDirectory, FolderName, fileName);
                 File.WriteAllText(filePath, fullContentToSave);
