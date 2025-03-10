@@ -9,13 +9,11 @@ namespace Lessons1_4.Services
         private string _url;
 
         private List<NewsModel> _news;
-        private List<NewsTitleModel> _newsTitles;
 
         public SiteParser(string externalUrl)
         {
             _url = externalUrl;
             _news = new List<NewsModel>();
-            _newsTitles = new List<NewsTitleModel>();
         }
 
         public async Task<List<NewsModel>> GetNewsAsync()
@@ -63,14 +61,16 @@ namespace Lessons1_4.Services
                     if (linkReference != null)
                     {
                         var fileName = FormatFileName(headerText);
-                        _newsTitles.Add(
-                            new NewsTitleModel() {
+                        _news.Add(
+                            new NewsModel 
+                            {
                                 FileName = $"[{i + 1}] {fileName}.txt",
                                 Title = headerText,
                                 PublishDate = newsPreviewDate,
                                 ViewsCount = newsPreviewCount,
                                 TagList = tagsString,
-                                LinkReference = linkReference
+                                LinkReference = linkReference,
+                                FullContent = string.Empty
                             }
                         );
                     }
@@ -78,22 +78,24 @@ namespace Lessons1_4.Services
                 catch (Exception ex)
                 {
                     Console.WriteLine("error" + ex.Message + i.ToString());
-                    _newsTitles.Add(
-                        new NewsTitleModel() {
+                    _news.Add(
+                        new NewsModel 
+                        {
                             FileName = $"[{i + 1}] {headerText}.txt",
                             Title = headerText,
                             PublishDate = string.Empty,
                             ViewsCount = string.Empty,
                             TagList = string.Empty,
-                            LinkReference = string.Empty
+                            LinkReference = string.Empty,
+                            FullContent = string.Empty
                         }
                     );
                 }
             }
-            await GetCurrentNewsValuesAsync(newsCount, _newsTitles, page);
+            await GetCurrentNewsValuesAsync(newsCount, _news, page);
         }
 
-        private async Task GetCurrentNewsValuesAsync(int newsCount, List<NewsTitleModel> newsTitleList, IPage page)
+        private async Task GetCurrentNewsValuesAsync(int newsCount, List<NewsModel> newsTitleList, IPage page)
         {
             if (newsCount == 0) 
             {
@@ -103,10 +105,10 @@ namespace Lessons1_4.Services
             {
                 for (int i = 0; i < newsCount; i++)
                 {
-                    var currLinkReference = newsTitleList[i].LinkReference;
-                    if (!string.IsNullOrEmpty(currLinkReference))
+                    var currentLinkReference = newsTitleList[i].LinkReference;
+                    if (!string.IsNullOrEmpty(currentLinkReference))
                     {
-                        await page.GotoAsync(currLinkReference);
+                        await page.GotoAsync(currentLinkReference);
                         await page.WaitForSelectorAsync(".article__header");
                         var newsMainTitle = page.Locator(".article__title");
                         var newsSubTitle = page.Locator(".article__second-title");
@@ -129,20 +131,12 @@ namespace Lessons1_4.Services
                                     fullNewsContent += "\n" + await newsTextsLocator.Nth(j).TextContentAsync();
                                 }
                             }
-                            _news.Add(new NewsModel()
-                            {
-                                TitleModel = _newsTitles[i],
-                                FullContent = fullNewsContent
-                            });
+                            _news[i].FullContent = fullNewsContent;
                         }
                     }
                     else
                     {
-                        _news.Add(new NewsModel()
-                        {
-                            TitleModel = _newsTitles[i],
-                            FullContent = string.Empty
-                        });
+                        _news[i].FullContent = string.Empty;
                     }
                 }
             }
