@@ -92,20 +92,20 @@ namespace Lessons1_4.Services
                     );
                 }
             }
-            await GetCurrentNewsValuesAsync(newsCount, _news, page);
+            await GetCurrentNewsValuesAsync(page);
         }
 
-        private async Task GetCurrentNewsValuesAsync(int newsCount, List<NewsModel> newsTitleList, IPage page)
+        private async Task GetCurrentNewsValuesAsync(IPage page)
         {
-            if (newsCount == 0) 
+            if (_news.Count== 0) 
             {
                 Console.WriteLine("Wrong list of news");
             }
             else
             {
-                for (int i = 0; i < newsCount; i++)
+                for (int i = 0; i < _news.Count; i++)
                 {
-                    var currentLinkReference = newsTitleList[i].LinkReference;
+                    var currentLinkReference = _news[i].LinkReference;
                     if (!string.IsNullOrEmpty(currentLinkReference))
                     {
                         await page.GotoAsync(currentLinkReference);
